@@ -1,0 +1,8 @@
+h1 {
+  text-align: center;
+}
+
+.chat {
+  display: flex;
+  justify-content: space-between;
+}
