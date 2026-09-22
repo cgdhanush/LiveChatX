@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./home.css";
 
 const Home = () => {
-  const [chats, setChats] = useState(["New Message"]);
+  const [chats, setChats] = useState<string[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+
+  useEffect(() => {
+    const fetchChats = async () => {
+      const res = await fetch("http://localhost:3000/messages");
+      const data = await res.json();
+      setChats(data);
+    };
+    fetchChats();
+  }, []);
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
