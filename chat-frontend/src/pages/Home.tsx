@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import "./home.css";
 
+type Chat = {
+  text: string;
+};
+
 const Home = () => {
-  const [chats, setChats] = useState<string[]>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
   const [inputMessage, setInputMessage] = useState("");
 
   useEffect(() => {
     const fetchChats = async () => {
-      const res = await fetch("http://localhost:3000/messages");
+      const res = await fetch("http://localhost:3000/api/messages");
       const data = await res.json();
       setChats(data);
     };
@@ -16,11 +20,26 @@ const Home = () => {
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const text = inputMessage.trim();
 
-    if (!inputMessage.trim()) return;
+    const sendChat = async () => {
+      const res = await fetch("http://localhost:3000/api/message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+      if (!res.ok) {
+        console.log("Failed to send message");
+        return;
+      }
+      const newMessage: Chat = await res.json();
+      setChats((prev) => [...prev, newMessage]);
+      setInputMessage("");
+    };
 
-    setChats([...chats, inputMessage]);
-    setInputMessage("");
+    sendChat();
   };
   return (
     <>
@@ -45,7 +64,7 @@ const Home = () => {
         </div>
         <div className="chat-disp">
           {chats.map((message, index) => (
-            <li key={index}> {message} </li>
+            <li key={index}> {message.text} </li>
           ))}
         </div>
       </div>
