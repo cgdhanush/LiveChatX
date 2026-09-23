@@ -1,15 +1,19 @@
-import express, { type Express, type Request, type Response } from "express";
+import express, { type Express } from "express";
 import cros from "cors";
+import connectDB from "./db.ts";
+import messageRouter from "./routes/message.routes.ts";
+
+import { config } from "dotenv";
+
+config();
+connectDB();
 
 const app: Express = express();
 
-app.use(express.json());
 app.use(cros());
+app.use(express.json());
+app.use("/api", messageRouter);
 
-const messages = ["hii mike", "hello arun", "had lunch ravi"];
-
-app.get("/messages", (req: Request, res: Response) => {
-  res.send(messages);
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
 });
-
-app.listen(3000);
