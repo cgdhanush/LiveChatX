@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import "./home.css";
 
+const socket = io("http://localhost:3000");
+
 type Chat = {
+  _id?: string;
   text: string;
 };
 
@@ -15,7 +19,15 @@ const Home = () => {
       const data = await res.json();
       setChats(data);
     };
+
     fetchChats();
+    socket.on("new-message", (message: Chat) => {
+      setChats((prev) => [...prev, message]);
+    });
+
+    return () => {
+      socket.off("new-message");
+    };
   }, []);
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
