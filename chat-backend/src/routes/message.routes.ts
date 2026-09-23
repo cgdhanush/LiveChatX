@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { log } from "node:console";
 import Message from "../models/Message.ts";
+import { io } from "../server.ts";
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.post("/message", async (req: Request, res: Response) => {
   }
 
   const message = await Message.create({ text });
+  io.emit("new-message", message);
   return res.status(201).json(message);
 });
 
