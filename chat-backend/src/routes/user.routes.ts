@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from "express";
-import { log } from "node:console";
 import User from "../models/User.ts";
+import bcrypt from "bcrypt";
 
 type SignupUser = {
   fullname: string;
@@ -17,9 +17,14 @@ const router = Router();
 
 router.post("/signup", async (req: Request, res: Response) => {
   try {
-    const body: SignupUser = req.body;
-    const createdUser = await User.create(body);
-    res.status(200).json({ message: "Created User", user: createdUser });
+    const { fullname, email, password }: SignupUser = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.create({
+      fullname,
+      email,
+      password: hashedPassword,
+    });
+    res.status(200).json({ message: "Created User" });
   } catch (error) {
     res.status(500).json({ message: "Failed to create User", error });
   }
@@ -32,13 +37,13 @@ router.post("/login", async (req: Request, res: Response) => {
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
       return res.status(401).json({
-        error: "Invalid email or password",
+        message: "Email not found",
       });
     }
-
-    if (existingUser.password !== password) {
+    const passwordMatch = await bcrypt.compare(password, existingUser.password);
+    if (!passwordMatch) {
       return res.status(401).json({
-        error: "Invalid email or password",
+        message: "password did not match",
       });
     }
 
