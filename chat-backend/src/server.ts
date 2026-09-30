@@ -2,6 +2,7 @@ import express, { type Express } from "express";
 import cros from "cors";
 import connectDB from "./db.ts";
 import messageRouter from "./routes/message.routes.ts";
+import userRouter from "./routes/user.routes.ts";
 
 import { config } from "dotenv";
 import { createServer } from "http";
@@ -30,7 +31,8 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use("/api", messageRouter);
+app.use("/api/message", messageRouter);
+app.use("/api/user", userRouter);
 
 httpServer.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
