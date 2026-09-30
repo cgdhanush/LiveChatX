@@ -13,8 +13,9 @@ const Signup = () => {
       alert("Password Does Match");
       return;
     }
+
     const signUP = async () => {
-      const res = fetch("http://localhost:3000/api/user/signup", {
+      const res = await fetch("http://localhost:3000/api/user/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
