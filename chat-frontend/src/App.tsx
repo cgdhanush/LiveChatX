@@ -1,9 +1,13 @@
-import Home from "./pages/Home"
+import Home from "./pages/Home";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 const App = () => {
   return (
-    <Home />
-  )
-}
+    // <Home />
+    // <Login />
+    <Signup />
+  );
+};
 
-export default App
+export default App;
