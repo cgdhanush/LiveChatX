@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
 type LoginSuccess = {
@@ -7,8 +8,10 @@ type LoginSuccess = {
 };
 
 const Login = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleLogin = async (
     e: React.SubmitEvent<HTMLFormElement>,
@@ -33,10 +36,11 @@ const Login = () => {
         throw new Error(data.message || "Login failed");
       }
 
+      // Save JWT
       localStorage.setItem("token", data.token);
 
-      console.log(data.message);
-      console.log("Login successful");
+      // Redirect to home
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error);
     }
