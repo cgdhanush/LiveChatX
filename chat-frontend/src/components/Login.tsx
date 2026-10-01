@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 
 type LoginSuccess = {
@@ -68,6 +68,9 @@ const Login = () => {
         />
 
         <button type="submit">Login</button>
+        <p>
+          Don't have an account? <Link to="/signup">Sign up</Link>
+        </p>
       </form>
     </div>
   );
