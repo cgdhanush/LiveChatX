@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./home.css";
+import Navbar from "../components/Navbar";
 
 type Chat = {
   _id?: string;
@@ -119,6 +120,8 @@ const Home = () => {
 
   return (
     <>
+      <Navbar />
+
       <h1>Welcome</h1>
 
       <div className="chat">
