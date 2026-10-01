@@ -7,6 +7,7 @@ import userRouter from "./routes/user.routes.ts";
 import { config } from "dotenv";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { auth } from "./auth.ts";
 
 config();
 connectDB();
@@ -22,6 +23,7 @@ export const io = new Server(httpServer, {
 
 app.use(cros());
 app.use(express.json());
+app.use(auth);
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);

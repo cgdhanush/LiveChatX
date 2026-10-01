@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import User from "../models/User.ts";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 type SignupUser = {
   fullname: string;
@@ -46,14 +47,19 @@ router.post("/login", async (req: Request, res: Response) => {
         message: "password did not match",
       });
     }
-
+    const secret = process.env.JWT_SECRET!;
+    const token = jwt.sign(
+      {
+        email,
+      },
+      secret,
+      {
+        expiresIn: "1h",
+      },
+    );
     return res.status(200).json({
       message: "Login successful",
-      user: {
-        id: existingUser._id,
-        fullname: existingUser.fullname,
-        email: existingUser.email,
-      },
+      token,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to get messages" });
