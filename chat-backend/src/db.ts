@@ -3,7 +3,7 @@ import { log } from "node:console";
 
 const connectDB = async () => {
   try {
-    const uri = process.env.MONGO_URI;
+    const uri = process.env.MONGODB_URI;
     if (uri) {
       await mongoose.connect(uri);
       log("MongoDB connected");
