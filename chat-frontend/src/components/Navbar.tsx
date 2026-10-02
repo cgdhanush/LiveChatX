@@ -14,7 +14,7 @@ const Navbar = () => {
     <nav className="navbar">
       {/* Logo */}
       <Link to="/" className="navbar-logo">
-        ChatApp
+        LiveChatX
       </Link>
 
       {/* Right side */}
