@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import Message from "../models/Message.ts";
-import { io } from "../server.ts";
+import { io } from "../socket.ts";
 
 const router = Router();
 

@@ -11,6 +11,31 @@ const Chat = () => {
   const [chats, setChats] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
 
+  const fetchChats = async (token: string) => {
+    try {
+      const res = await fetch("http://localhost:3000/api/message", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return;
+        }
+
+        throw new Error("Failed to fetch messages");
+      }
+
+      const data: ChatMessage[] = await res.json();
+      setChats(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -25,49 +50,42 @@ const Chat = () => {
       },
     });
 
-    const fetchChats = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/message", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) {
-          if (res.status === 401) {
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-            return;
-          }
-
-          throw new Error("Failed to fetch messages");
-        }
-
-        const data: ChatMessage[] = await res.json();
-        setChats(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchChats();
+    console.log("Socket created:", socket);
 
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id);
     });
 
     socket.on("connect_error", (error) => {
-      console.error("Socket authentication error:", error.message);
+      console.error("Socket error:", error.message);
     });
 
     socket.on("new-message", (message: ChatMessage) => {
+      console.log("NEW MESSAGE:", message);
+
       setChats((prev) => [...prev, message]);
     });
+
+    socket.on("message-deleted", (id: string) => {
+      console.log("MESSAGE DELETED:", id);
+
+      setChats((prev) => prev.filter((message) => message._id !== id));
+    });
+
+    socket.on("chat-cleared", () => {
+      console.log("CHAT CLEARED");
+
+      setChats([]);
+    });
+
+    fetchChats(token);
 
     return () => {
       socket.off("connect");
       socket.off("connect_error");
       socket.off("new-message");
+      socket.off("message-deleted");
+      socket.off("chat-cleared");
       socket.disconnect();
     };
   }, []);

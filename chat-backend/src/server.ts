@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
 import { createServer } from "http";
-import { Server } from "socket.io";
 
+import { initializeSocket } from "./socket.ts";
 import connectDB from "./db.ts";
 import messageRouter from "./routes/message.routes.ts";
 import userRouter from "./routes/user.routes.ts";
@@ -27,34 +27,45 @@ app.use(auth);
 app.use("/api/message", messageRouter);
 
 // Socket.IO
-export const io = new Server(httpServer, {
-  cors: {
-    origin: "*",
-  },
-});
+const io = initializeSocket(httpServer);
 
 // Socket authentication
 io.use((socket, next) => {
+  console.log("Socket authentication attempt");
+
   const token = socket.handshake.auth.token;
 
+  console.log("Token exists:", !!token);
+
   if (!token) {
+    console.log("NO TOKEN");
     return next(new Error("Authentication required"));
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    );
+
+    console.log("JWT decoded:", decoded);
 
     if (typeof decoded === "string" || !decoded.id) {
+      console.log("INVALID JWT PAYLOAD");
       return next(new Error("Invalid token"));
     }
 
     socket.data.userId = decoded.id;
 
+    console.log("Socket authentication successful");
+
     next();
-  } catch {
+  } catch (error) {
+    console.error("JWT ERROR:", error);
     next(new Error("Invalid or expired token"));
   }
 });
+
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.data.userId);
