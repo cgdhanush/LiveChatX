@@ -115,25 +115,104 @@ const Chat = () => {
     }
   };
 
+  const deleteMessage = async (id: string) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/message/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete message");
+      }
+
+      // Remove from UI immediately
+      setChats((prev) => prev.filter((message) => message._id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const clearChat = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to clear all chats?",
+    );
+
+    if (!confirmed) return;
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/api/message", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to clear chat");
+      }
+
+      setChats([]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="chat">
+      {/* Chat header */}
+      <div className="chat-header">
+        <h3>Chat</h3>
+
+        <button onClick={clearChat}>Clear Chat</button>
+      </div>
+
+      {/* Messages */}
+      <div className="chat-disp">
+        {chats.map((message, index) => (
+          <div className="message" key={message._id ?? index}>
+            <span>{message.text}</span>
+
+            {message._id && (
+              <button
+                className="delete-btn"
+                onClick={() => deleteMessage(message._id!)}
+              >
+                🗑️
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Input */}
       <div className="chat-form">
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Type a message...."
+            placeholder="Type a message..."
           />
 
           <input type="submit" value="Send" />
         </form>
-      </div>
-
-      <div className="chat-disp">
-        {chats.map((message, index) => (
-          <li key={message._id ?? index}>{message.text}</li>
-        ))}
       </div>
     </div>
   );
