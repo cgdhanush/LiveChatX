@@ -13,7 +13,7 @@ const Chat = () => {
 
   const fetchChats = async (token: string) => {
     try {
-      const res = await fetch("http://localhost:3000/api/message", {
+      const res = await fetch("/api/message", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -44,7 +44,7 @@ const Chat = () => {
       return;
     }
 
-    const socket = io("http://localhost:3000", {
+    const socket = io({
       auth: {
         token,
       },
