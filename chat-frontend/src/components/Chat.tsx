@@ -105,7 +105,7 @@ const Chat = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/message", {
+      const res = await fetch("/api/message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,9 +124,8 @@ const Chat = () => {
         throw new Error("Failed to send message");
       }
 
-      const newMessage: ChatMessage = await res.json();
+      await res.json();
 
-      setChats((prev) => [...prev, newMessage]);
       setInputMessage("");
     } catch (error) {
       console.error(error);
@@ -142,7 +141,7 @@ const Chat = () => {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/api/message/${id}`, {
+      const res = await fetch(`/api/message/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -152,9 +151,6 @@ const Chat = () => {
       if (!res.ok) {
         throw new Error("Failed to delete message");
       }
-
-      // Remove from UI immediately
-      setChats((prev) => prev.filter((message) => message._id !== id));
     } catch (error) {
       console.error(error);
     }
@@ -175,7 +171,7 @@ const Chat = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/message", {
+      const res = await fetch("/api/message", {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -185,8 +181,6 @@ const Chat = () => {
       if (!res.ok) {
         throw new Error("Failed to clear chat");
       }
-
-      setChats([]);
     } catch (error) {
       console.error(error);
     }
