@@ -43,10 +43,7 @@ io.use((socket, next) => {
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
 
     console.log("JWT decoded:", decoded);
 
@@ -66,7 +63,6 @@ io.use((socket, next) => {
   }
 });
 
-
 io.on("connection", (socket) => {
   console.log("User connected:", socket.data.userId);
   console.log("Socket ID:", socket.id);
@@ -76,6 +72,6 @@ io.on("connection", (socket) => {
   });
 });
 
-httpServer.listen(3000, () => {
+httpServer.listen(3000, "0.0.0.0", () => {
   console.log("Server running on http://localhost:3000");
 });
