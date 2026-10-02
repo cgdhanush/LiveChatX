@@ -2,11 +2,16 @@
 
  A simple real-time chat application built with a React frontend and a Node.js backend.
 
+ ## 🚀 Live Demo
+
+ **LiveChatX:**\
+ https://livechatx-latest.onrender.com/
+
  ## Project Structure
 
 ```
 LiveChatX/
-├── chat-frontend/    # React 
+├── chat-frontend/    # React
 ├── chat-backend/     # Node.js backend
 └── README.md
 ```
@@ -89,7 +94,7 @@ MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
 
- Do not commit your `.env` file to Git.
+ > Do not commit your `.env` file to Git.
 
  ## API
 
@@ -107,18 +112,28 @@ DELETE /api/message
 
  Run the frontend and backend in separate terminals:
 
+ ### Terminal 1 — Backend
+
 ```
-# Terminal 1
 cd chat-backend
 npm run dev
 ```
 
+ ### Terminal 2 — Frontend
+
 ```
-# Terminal 2
 cd chat-frontend
 npm run dev
 ```
 
+ ## 🌐 Deployment
+
+ The application is deployed and available at:
+
+ **https://livechatx-latest.onrender.com/**
+
  ## License
 
  This project is for learning and development purposes.
+
+ This version puts the deployed app near the top so visitors can immediately access the live demo.
